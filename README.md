@@ -1,50 +1,97 @@
-DefNd
-======
-
-A Python firewall: Because slow networks are much secure networks.
 
 
-Installation
-------------
+---
 
-This section assumes that you are installing this program on Ubuntu 14.04 LTS.
-This firewall should work on other Linux systems, but safety not guaranteed.
+## 📖 Project Description
 
-First, install the required packages. On Ubuntu, these are `iptables`, `python`,
-`python-pip`, `build-essential`, `python-dev`, and
-`libnetfilter-queue-dev`. Next, use `pip2` to install the project dependencies,
-which can be found in `requirements.txt`.
+**DefNd** is a Python-based firewall that leverages `iptables` and `libnetfilter_queue` to intercept and filter network packets. Its philosophy is simple: *slow networks are secure networks*. By introducing controlled packet handling, DefNd provides a customizable way to enforce traffic rules, experiment with packet inspection, and enhance network security.
 
-The commands for both these operations are:
+---
+# DefNd 🔥
+*A Python firewall: Because slow networks are much secure networks.*
 
-    sudo apt-get install python python-pip iptables build-essential python-dev libnetfilter-queue-dev
-    pip install --user -r requirements.txt
+---
 
+## 🚀 Features
+- Python-based firewall using `iptables` and `libnetfilter_queue`
+- JSON-based configuration for flexible rule management
+- Automatic cleanup of `iptables` rules on exit
+- Example configuration included for quick setup
 
-Running
--------
+---
 
-The main file is `main.py`, which needs to be run as root to modify IPTables.
-Additionally, main needs to receive a JSON configuration file as its first
-argument. If running with the example configuration, the command is:
+## 📦 Installation
 
-`sudo python2 main.py examples/example.json`
+This guide assumes installation on **Ubuntu 14.04 LTS**.  
+DefNd may work on other Linux distributions, but compatibility is not guaranteed.
 
-To stop DEFND, press Control-C.
+### Step 1: Install required packages
+```bash
+sudo apt-get install python python-pip iptables build-essential python-dev libnetfilter-queue-dev
+```
 
+### Step 2: Install Python dependencies
+Dependencies are listed in `requirements.txt`. Install them with:
+```bash
+pip install --user -r requirements.txt
+```
 
-Troubleshooting
----------------
+---
 
-Defnd should undo its changes to IPTables after exiting. However, if you are
-unable to access the internet after exiting PyWall, view existing
-IPTables rules with `sudo iptables -nL`. If a rule with the target chain
-`NFQueue` lingers, delete it with
-`sudo iptables -D INPUT -j NFQUEUE --queue-num [undesired-queue-number]`.
+## ▶️ Running DefNd
 
-For INPUT rules, the command is `sudo iptables -D INPUT -j NFQUEUE --queue-num 1`.
-For OUTPUT rules, the command is `sudo iptables -D OUTPUT -j NFQUEUE --queue-num 2`.
+The main entry point is `main.py`.  
+Since DefNd modifies `iptables`, it must be run as **root**.
 
-In case Defnd gives a message that another application has the xtables lock,
-Control-C the server, ensure that all the IPTables rules are cleared, and
-restart Defnd.
+Example run with the provided configuration:
+```bash
+sudo python2 main.py examples/example.json
+```
+
+To stop DefNd, press **Control-C**.
+
+---
+
+## 🛠️ Troubleshooting
+
+- **Internet not accessible after exit**  
+  DefNd should undo its changes to `iptables`. If rules linger:
+  ```bash
+  sudo iptables -nL
+  ```
+  Look for rules with target chain `NFQUEUE`. Remove them with:
+  ```bash
+  sudo iptables -D INPUT -j NFQUEUE --queue-num 1
+  sudo iptables -D OUTPUT -j NFQUEUE --queue-num 2
+  ```
+
+- **xtables lock error**  
+  If another application holds the xtables lock:
+  1. Stop DefNd with Control-C  
+  2. Clear all lingering `iptables` rules  
+  3. Restart DefNd  
+
+---
+
+## 📂 Project Structure
+```
+DefNd/
+├── main.py                # Main firewall script
+├── requirements.txt       # Python dependencies
+├── examples/
+│   └── example.json       # Sample configuration
+└── README.md              # Documentation
+```
+
+---
+
+## ⚠️ Notes
+- Requires **Python 2.x** (tested with Python 2.7).
+- Root privileges are mandatory for modifying `iptables`.
+- Use with caution: improper rules may block all traffic.
+
+---
+
+## 📜 License
+- Free to use, modify, and distribute.
+```
